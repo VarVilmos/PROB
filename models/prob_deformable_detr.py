@@ -614,7 +614,18 @@ def build(args):
     
     if args.masks:
         model = DETRsegm(model, freeze_detr=(args.frozen_weights is not None))
-        
+
+    if getattr(args, 'freeze_detector', False):
+        frozen, trainable = [], []
+        for name, param in model.named_parameters():
+            if 'class_embed' in name:
+                param.requires_grad = True
+                trainable.append(name)
+            else:
+                param.requires_grad = False
+                frozen.append(name)
+        print(f"[freeze_detector] Frozen {len(frozen)} param groups. Trainable: {trainable}")
+
     matcher = build_matcher(args)
     weight_dict = {'loss_ce': args.cls_loss_coef, 'loss_bbox': args.bbox_loss_coef, 'loss_giou': args.giou_loss_coef, 'loss_obj_ll': args.obj_loss_coef}
     

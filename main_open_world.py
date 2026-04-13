@@ -147,6 +147,8 @@ def get_args_parser():
     parser.add_argument('--obj_loss_coef', default=1, type=float)
     parser.add_argument('--obj_temp', default=1, type=float)
     parser.add_argument('--freeze_prob_model', default=False, action='store_true', help='freeze model probabistic estimation')
+    parser.add_argument('--freeze_detector', default=False, action='store_true',
+                        help='freeze all model parameters except class_embed; only the classifier head is trained (classifier-only incremental learning)')
 
     
     # Exemplar replay selection
